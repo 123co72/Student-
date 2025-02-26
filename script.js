@@ -1,11 +1,31 @@
 document.getElementById("chatBtn").addEventListener("click", function() {
-    document.getElementById("content").innerHTML = "<h2>Chat Room</h2><p>Chat feature coming soon...</p>";
+    document.getElementById("content").innerHTML = `
+        <h2>Chat Room</h2>
+        <div id="chat-box"></div>
+        <input type="text" id="message-input" placeholder="Type a message...">
+        <button id="send-btn">Send</button>
+    `;
+
+    loadChat();
+
+    document.getElementById("send-btn").addEventListener("click", sendMessage);
 });
 
-document.getElementById("filesBtn").addEventListener("click", function() {
-    document.getElementById("content").innerHTML = "<h2>File Sharing</h2><p>Upload and share files here...</p>";
-});
+function sendMessage() {
+    let messageInput = document.getElementById("message-input");
+    let message = messageInput.value.trim();
 
-document.getElementById("announcementsBtn").addEventListener("click", function() {
-    document.getElementById("content").innerHTML = "<h2>Announcements</h2><p>Lecturer updates and notices...</p>";
-});
+    if (message !== "") {
+        let chatHistory = JSON.parse(localStorage.getItem("chat")) || [];
+        chatHistory.push(message);
+        localStorage.setItem("chat", JSON.stringify(chatHistory));
+        messageInput.value = "";
+        loadChat();
+    }
+}
+
+function loadChat() {
+    let chatBox = document.getElementById("chat-box");
+    let chatHistory = JSON.parse(localStorage.getItem("chat")) || [];
+    chatBox.innerHTML = chatHistory.map(msg => `<p>${msg}</p>`).join("");
+}
